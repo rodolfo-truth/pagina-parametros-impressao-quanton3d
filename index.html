@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quanton3D - Seletor de Impressoras e Resinas</title>
+</head>
+
+
+<style>
+  /* CSS DA PAGINA DE SELEÇÃO DE IMPRESSORA E RESINA - QUANTON3D 
+PAGINA PARAMETROS */
+
+.main-container-quanton3d {
+    line-height: 1.6;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    font-family: 'Montserrat', sans-serif;
+    background-color: #0a0a3a;
+    color: #fff;
+    box-sizing: border-box;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.h1-quanton3d, .h2-quanton3d {
+    text-align: left;
+    margin-bottom: 1.5rem;
+    color: #fff;
+    font-weight: 700;
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.h1-quanton3d::before, .h2-quanton3d::before {
+    content: 'PASSO 1';
+    font-size: 28px;
+    color: #00c3ff;
+    margin-right: 0.5rem;
+    font-weight: bold;
+}
+
+.h2-quanton3d::before {
+    content: 'PASSO 2';
+}
+
+.h2-params {
+    color: #00c3ff;
+    margin-bottom: 0px !important;
+}
+
+.h2-params::before {
+    content: '';
+    font-size: 28px;
+    color: #00c3ff;
+    margin-right: 0.5rem;
+    font-weight: bold;
+}
+
+.printer-selector, .resin-selector {
+    margin-bottom: 3rem;
+    position: relative;
+}
+
+.resin-selector {
+    display: none;
+}
+
+.brands, .resin-categories {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    background-color: #f0f2f5;
+    padding: 1rem;
+    border-radius: 12px 0 0 12px;
+    width: 250px;
+    height: 400px;
+    float: left;
+
+}
+
+.brand-option, .category-option {
+    padding: 1rem;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+    position: relative;
+}
+
+.brand-option:hover, .category-option:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.input-quanton3d[type="radio"] {
+    position: absolute;
+    opacity: 0;
+}
+
+.labels-quanton3d {
+    cursor: pointer;
+    font-weight: 600;
+    display: block;
+    color: #2B2D42;
+    font-size: 1rem;
+}
+
+.input-quanton3d[type="radio"]:checked + .labels-quanton3d {
+    color: #4361EE;
+}
+
+.input-quanton3d[type="radio"]:checked + .labels-quanton3d::before {
+    content: '>';
+    position: absolute;
+    left: -10px;
+    color: #4361EE;
+}
+
+.models-container, .resins-container {
+    box-sizing: border-box;
+    margin-left: 250px;
+    background-color: #4d7bff;
+    padding: 2rem;
+    border-radius: 0 12px 12px 0;
+    min-height: 400px;
+}
+
+.navigation-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.models-grid, .resins-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+    width: 100%;
+    margin: 0 1rem;
+    opacity: 0;
+    transform: translateX(32px);
+    animation: gridFadeIn 0.38s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes gridFadeIn {
+    from {
+        opacity: 0;
+        transform: translateX(32px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.model-card, .resin-card {
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    cursor: pointer;
+}
+
+.model-card:hover, .resin-card:hover {
+    transform: translateY(-5px);
+}
+
+.model-image-container, .resin-image-container {
+    position: relative;
+    padding-top: 100%;
+    overflow: hidden;
+}
+
+.model-image-container img, .resin-image-container img {
+    box-sizing: border-box;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    padding: 1rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.model-info, .resin-info {
+    padding: 1rem;
+    text-align: center;
+}
+
+.model-name, .resin-name {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #fff;
+}
+
+.nav-button {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    outline: none;
+    padding: 0;
+    margin: 0 0.5rem;
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.nav-button img {
+    width: 28px;
+    height: 28px;
+    transition: transform 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none;
+    user-select: none;
+}
+
+.nav-button:hover:not(:disabled) img {
+    transform: scale(1.25);
+}
+
+.nav-button:disabled img {
+    opacity: 0.25;
+}
+
+
+.help-button {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: #f44336;
+    color: white;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 1.2rem;
+}
+
+
+
+.help-text {
+    position: absolute;
+    top: 40px;
+    right: 0;
+    background-color: white;
+    color: #2B2D42;
+    padding: 1rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    width: 250px;
+    z-index: 10;
+    display: none;
+}
+
+.help-button:hover + .help-text {
+    display: block;
+}
+
+/* Clearfix para o layout float */
+.printer-selector::after, .resin-selector::after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+@media (max-width: 1200px) {
+    .models-grid, .resins-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .brands, .resin-categories {
+        box-sizing: border-box;
+        float: none;
+        width: 100%;
+        border-radius: 12px 12px 0 0;
+    }
+    
+    .models-container, .resins-container {
+        box-sizing: border-box;
+        margin-left: 0;
+        border-radius: 0 0 12px 12px;
+    }
+    
+    .models-grid, .resins-grid {
+        grid-template-columns: repeat(1, 1fr);
+    }
+}
+
+
+/* =========================
+   PARÂMETROS (resultado)
+========================= */
+
+
+.params-section {
+    background: #e6edf5;
+    border-radius: 12px;
+    padding: 2.25rem;
+    margin-top: 2rem;
+}
+
+.params-section > .h2-params {
+    font-size: 40px;
+    line-height: 1.1;
+    color: #24c4ff;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.params-flex {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 48px;
+    margin-bottom: 1.5rem;
+}
+
+.params-images {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0 !important;
+    min-width: 230px;
+    justify-content: center;
+}
+
+.img-param-printer {
+    width: 300px;
+    height: auto;
+    object-fit: contain;
+    padding: 12px 0px;
+    margin-right: -100px;
+}
+.img-param-resin {
+    width: 300px;
+    height: auto;
+    object-fit: contain;
+    border-radius: 12px;
+    padding: 12px 0px;
+}
+
+.params-wrapper {
+    max-width: 480px;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity .25s ease, transform .25s ease;
+}
+
+.param-card {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    height: 60px;
+}
+
+.param-title {
+    border: 10px;
+    display: flex;
+    text-transform: uppercase;
+    background-color: #fff;
+    margin-right: 10px;
+    color: #24c4ff;
+    font-weight: 700;
+    font-size: 16px;
+    padding-left: 10px;
+    height: 52px;
+    width: 250px;
+    justify-content: left;
+    align-items: center;
+}
+
+.param-value {
+    background: #07c1ff;
+    color: #fff;
+    font-weight: 800;
+    font-size: 16px;
+    min-width: 120px;
+    justify-content: center;
+    display: flex;
+    align-items: center;
+    outline: none;
+    height: 52px;
+}
+
+@media (max-width: 900px) {
+    .params-flex {
+        flex-direction: column;
+        gap: 24px;
+    }
+    .params-images {
+        min-width: unset;
+        gap: 12px;
+    }
+    .img-param-printer, .img-param-resin {
+        width: 120px;
+        padding: 6px;
+    }
+    .params-wrapper {
+        max-width: 100%;
+        padding: 0 8px;
+    }
+    .param-card {
+        padding: 14px 12px;
+    }
+    .params-actions {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+}
+
+.params-actions {
+    max-width: 480px;
+    margin: 18px auto 10px auto;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+    color: #1a1a1a;
+}
+    .action.download {
+        cursor: pointer;
+    }
+
+    .action.download a {
+        cursor: pointer;
+        transition: text-decoration 0.2s;
+    }
+    .action.download a:hover span {
+        text-decoration: underline;
+    }
+.params-actions .action {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+}
+.params-actions img { width: 24px; height: 24px; }
+
+.params-note {
+    max-width: 480px;
+    margin: 8px auto 0 auto;
+    color: #1a1a1a;
+    font-size: 14px;
+    opacity: .9;
+}
+
+@media (max-width: 900px) {
+    .params-wrapper {
+        max-width: 100%;
+        padding: 0 8px;
+    }
+    .param-card {
+        padding: 14px 12px;
+    }
+    .params-actions {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+}
+
+</style>
+
+<body>
+  <div class="main-container-quanton3d">
+    <div class="printer-selector">
+      <h1 class="h1-quanton3d" >ESCOLHA SUA IMPRESSORA</h1>
+      <div class="help-button">?</div>
+      <div class="help-text">Não encontrou a sua impressora? Entre em contato conosco!</div>
+
+      <div class="brands">
+        <div class="brand-option">
+          <input class="input-model-impressora input-quanton3d"  type="radio" name="brand" id="anycubic" value="anycubic">
+          <label class="label-brands labels-quanton3d" for="anycubic">Anycubic</label>
+        </div>
+        <div class="brand-option">
+          <input class="input-model-impressora input-quanton3d" type="radio" name="brand" id="creality" value="creality">
+          <label class="label-brands labels-quanton3d" for="creality">Creality</label>
+        </div>
+        <div class="brand-option">
+          <input class="input-model-impressora input-quanton3d" type="radio" name="brand" id="elegoo" value="elegoo">
+          <label class="label-brands labels-quanton3d" for="elegoo">Elegoo</label>
+        </div>
+        <div class="brand-option">
+          <input class="input-model-impressora input-quanton3d" type="radio" name="brand" id="phrozen" value="phrozen">
+          <label class="label-brands labels-quanton3d" for="phrozen">Phrozen</label>
+        </div>
+      </div>
+      <div class="models-container">
+        <!-- Os modelos serão inseridos aqui via JavaScript -->
+      </div>
+    </div>
+
+    <div class="resin-selector">
+      <h2 class="h2-quanton3d" >ESCOLHA SUA RESINA</h2>
+      <div class="help-button">?</div>
+      <div class="help-text">Não encontrou a sua resina? Entre em contato conosco!</div>
+
+      <div class="resin-categories">
+        <div class="category-option">
+          <input class="input-resin-categories input-quanton3d" type="radio" name="category" id="action-figures" value="ActionFigures">
+          <label class="label-resin-categories labels-quanton3d" for="action-figures">Action Figures</label>
+        </div>
+        <div class="category-option">
+          <input class="input-resin-categories input-quanton3d" type="radio" name="category" id="engenharia" value="Engenharia">
+          <label class="label-resin-categories labels-quanton3d" for="engenharia">Engenharia</label>
+        </div>
+        <div class="category-option">
+          <input class="input-resin-categories input-quanton3d" type="radio" name="category" id="odontologia" value="Odontologia">
+          <label class="label-resin-categories labels-quanton3d" for="odontologia">Odontologia</label>
+        </div>
+        <div class="category-option">
+          <input class="input-resin-categories  input-quanton3d" type="radio" name="category" id="uso-geral" value="UsoGeral">
+          <label class="label-resin-categories labels-quanton3d" for="uso-geral">Uso Geral</label>
+        </div>
+      </div>
+      <div class="resins-container">
+        <!-- As resinas serão inseridas aqui via JavaScript -->
+      </div>
+    </div>
+
+    <!-- PARÂMETROS -->
+    <div class="params-section" id="params-section">
+      <h2 class="h2-params">Passo 3</h2>
+      <div class="params-flex">
+        <div class="params-images">
+          <img id="img-printer" class="img-param-printer" src="" alt="Impressora" style="display:none;" />
+          <img id="img-resin" class="img-param-resin" src="" alt="Resina" style="display:none;" />
+        </div>
+        <div class="params-wrapper visible" id="params-wrapper">
+          <h2 class="h2-params">PARÂMETROS DE IMPRESSÃO</h2>
+          <div class="param-card">
+            <div class="param-title">Altura da Camada</div>
+            <div class="param-value" id="altura-camada">-</div>
+          </div>
+          <div class="param-card">
+            <div class="param-title">Camadas de Base</div>
+            <div class="param-value" id="camadas-base">-</div>
+          </div>
+          <div class="param-card">
+            <div class="param-title">Tempo de Exposição</div>
+            <div class="param-value" id="tempo-exposicao">-</div>
+          </div>
+          <div class="param-card">
+            <div class="param-title">Tempo de Exposição Base</div>
+            <div class="param-value" id="tempo-exposicao-base">-</div>
+          </div>
+        </div>
+      </div>
+      <div class="params-actions">
+        <div class="action download">
+          <a id="download-result" href="#" download style="text-decoration:none;color:inherit;">
+            <span>Faça download deste resultado</span>
+          </a>
+        </div>
+        <div class="action ">
+          <span>Dúvidas? Fale com a gente!</span>
+        </div>
+      </div>
+      <p class="params-note">
+        Vale ressaltar que esses padrões são apenas valores iniciais. Mesmo com impressoras do mesmo modelo, a
+        intensidade da luz UV pode variar, o que impacta o processo de cura. Por isso, é sempre recomendável realizar um
+        teste de exposição para ajustar a configuração de forma mais precisa. OBSERVAÇÃO IMPORTANTE: O teste deve ser
+        feito não no centro da base de impressão, mas sim nas extremidades, para garantir que a cura seja uniforme em
+        toda a área de impressão.
+      </p>
+    </div>
+  </div>
+
+
+
+  <script type="module" >
+    // parametros.js
+ const PARAMS = {
+  'Halot One': { 'Pyroblast': { layerHeight: 0.05, baseLayers: 10, exposure: 2.5, baseExposure: 45 } },
+  'Halot Sky': { 'Pyroblast': { layerHeight: 0.05, baseLayers: 8, exposure: 2.5, baseExposure: 45 } },
+
+  'LD-006': { 'Pyroblast': { layerHeight: 0.05, baseLayers: 6, exposure: 2.1, baseExposure: 35 } },
+  'LD002H': { 'Pyroblast': { layerHeight: 0.05, baseLayers: 5, exposure: 2.0, baseExposure: 30 } },
+  'LD002R': { 'Pyroblast': { layerHeight: 0.05, baseLayers: 10, exposure: 8.0, baseExposure: 65 } },
+
+  'Mars': { 'Pyroblast': { layerHeight: 0.05, baseLayers: 10, exposure: 8.0, baseExposure: 70 } },
+  'Mars 2 Pro': { 'Pyroblast': { layerHeight: 0.05, baseLayers: 5, exposure: 1.8, baseExposure: 35 } },
+  'Mars 3 Pro': { 'Pyroblast': { layerHeight: 0.05, baseLayers: 6, exposure: 1.9, baseExposure: 35 } },
+  'Mars 3 Ultra': { 'Pyroblast': { layerHeight: 0.05, baseLayers: 6, exposure: 1.9, baseExposure: 35 } },
+
+  'Mini 4K': { 'Pyroblast': { layerHeight: 0.05, baseLayers: 6, exposure: 2.5, baseExposure: 40 } },
+
+  'Photon Classic': { 'Pyroblast': { layerHeight: 0.05, baseLayers: 10, exposure: 8.0, baseExposure: 70 } },
+  'Photon M3 Max': { 'Pyroblast': { layerHeight: 0.05, baseLayers: 10, exposure: 2.1, baseExposure: 45 } },
+  'Photon Mono': { 'Pyroblast': { layerHeight: 0.05, baseLayers: 8, exposure: 2.0, baseExposure: 35 } },
+  'Photon Mono M3 4K': { 'Pyroblast': { layerHeight: 0.05, baseLayers: 6, exposure: 1.9, baseExposure: 35 } },
+  'Photon Mono S': { 'Pyroblast': { layerHeight: 0.05, baseLayers: 10, exposure: 8.0, baseExposure: 70 } },
+  'Photon Mono SE': { 'Pyroblast': { layerHeight: 0.05, baseLayers: 8, exposure: 2.0, baseExposure: 35 } },
+  'Photon Mono X 4K': { 'Pyroblast': { layerHeight: 0.05, baseLayers: 6, exposure: 1.9, baseExposure: 35 } },
+  'Photon Mono X 6K': { 'Pyroblast': { layerHeight: 0.05, baseLayers: 6, exposure: 2.0, baseExposure: 40 } },
+
+  'Saturn': { 'Pyroblast': { layerHeight: 0.05, baseLayers: 7, exposure: 2.0, baseExposure: 40 } },
+  'Saturn 2': { 'Pyroblast': { layerHeight: 0.05, baseLayers: 7, exposure: 2.5, baseExposure: 35 } },
+  'Saturn 3': { 'Pyroblast': { layerHeight: 0.00, baseLayers: 6, exposure: 1.8, baseExposure: 25 } },
+  'Saturn Ultra': { 'Pyroblast': { layerHeight: 0.00, baseLayers: 6, exposure: 1.3, baseExposure: 22 } },
+
+
+};
+
+// zeros quando não houver mapeamento
+ const ZERO_PARAMS = { layerHeight: 0, baseLayers: 0, exposure: 0, baseExposure: 0 };
+
+const printerData = {
+    anycubic: [
+        { name: 'Photon Classic', image: 'https://res.cloudinary.com/dojind78c/image/upload/v1756070211/photon-classica_rryjug.png' },
+        { name: 'Photon M3 Max', image: 'https://res.cloudinary.com/dojind78c/image/upload/v1756070206/photon-m3-max_g2eqmt.png' },
+        { name: 'Photon Mono M3 4K', image: 'https://res.cloudinary.com/dojind78c/image/upload/v1756070206/photon-mono-m3-4k_pqhnc1.png' },
+        { name: 'Photon Mono S', image: 'https://res.cloudinary.com/dojind78c/image/upload/v1756070207/photon-mono-s_hpbnh5.png' },
+        { name: 'Photon Mono SE', image: 'https://res.cloudinary.com/dojind78c/image/upload/v1756070207/photon-mono-se_b0pdnb.png' },
+        { name: 'Photon Mono X 2', image: 'https://res.cloudinary.com/dojind78c/image/upload/v1756070207/photon-mono-x-2_txi4ch.png' },
+        { name: 'Photon Mono X 4K', image: 'https://res.cloudinary.com/dojind78c/image/upload/v1756070208/photon-mono-x-4k_rym5y9.png' },
+        { name: 'Photon Mono X 6K', image: 'https://res.cloudinary.com/dojind78c/image/upload/v1756070208/photon-mono-x-6k_duk3wk.png' },
+        { name: 'Photon Mono', image: 'https://res.cloudinary.com/dojind78c/image/upload/v1756070209/photon-mono_hwxtni.png' }
+    ],
+    creality: [
+        { name: 'Halot One', image: 'https://res.cloudinary.com/dojind78c/image/upload/v1756070210/halot-one-2_zeuuic.png' },
+        { name: 'Halot Sky', image: 'https://res.cloudinary.com/dojind78c/image/upload/v1756070210/halot-sky-2_l8q328.png' },
+        { name: 'LD-006', image: 'https://res.cloudinary.com/dojind78c/image/upload/v1756070211/ld-006_qoynpa.png' },
+        { name: 'LD002H', image: 'https://res.cloudinary.com/dojind78c/image/upload/v1756070221/ld002h-2_g2wu16.png' },
+        { name: 'LD002R', image: 'https://res.cloudinary.com/dojind78c/image/upload/v1756070212/ld002r-2_awomqg.png' }
+    ],
+    elegoo: [
+        { name: 'Mars', image: 'https://res.cloudinary.com/dojind78c/image/upload/v1756070215/mars_e4m9pq.png' },
+        { name: 'Mars 2 Pro', image: 'https://res.cloudinary.com/dojind78c/image/upload/v1756070213/mars-2-pro_qc9jwm.png' },
+        { name: 'Mars 3 Pro', image: 'https://res.cloudinary.com/dojind78c/image/upload/v1756070213/mars-3-pro_xf5ued.png' },
+        { name: 'Mars 3 Ultra', image: 'https://res.cloudinary.com/dojind78c/image/upload/v1756070214/mars-3-ultra_xn3xtn.png' },
+        { name: 'Saturn 2', image: 'https://res.cloudinary.com/dojind78c/image/upload/v1756070215/saturn-2_kvr1ok.png' },
+        { name: 'Saturn 3', image: 'https://res.cloudinary.com/dojind78c/image/upload/v1756070216/saturn-3_ud50ka.png' },
+        { name: 'Saturn Ultra', image: 'https://res.cloudinary.com/dojind78c/image/upload/v1756070217/saturn-ultra_w1wwek.png' },
+        { name: 'Saturn', image: 'https://res.cloudinary.com/dojind78c/image/upload/v1756070217/saturn_em3qja.png' }
+    ],
+    phrozen: [
+        { name: 'Mini 4K', image: 'https://res.cloudinary.com/dojind78c/image/upload/v1756070218/phrozen-mini-4k-1-1_vpzpun.png' }
+    ]
+};
+
+const resinData = {
+    ActionFigures: [
+        { name: 'Alchemist', image: 'https://res.cloudinary.com/dojind78c/image/upload/v1756070218/alchemist_ojxxkx.png' },
+        { name: 'Flexform', image: 'https://res.cloudinary.com/dojind78c/image/upload/v1756070219/flexform_xy2h1e.png' },
+        { name: 'Iron', image: 'https://res.cloudinary.com/dojind78c/image/upload/v1756070220/iron_pgsiiq.png' },
+        { name: 'Poseidon', image: 'https://res.cloudinary.com/dojind78c/image/upload/v1756070222/poseidon_sunw9j.png' },
+        { name: 'Pyroblast', image: 'https://res.cloudinary.com/dojind78c/image/upload/v1756070222/pyroblast_cfru6o.png' },
+        { name: 'Spark', image: 'https://res.cloudinary.com/dojind78c/image/upload/v1756070231/spark_syxq7r.png' },
+        { name: 'Spin', image: 'https://res.cloudinary.com/dojind78c/image/upload/v1756070223/spin_uur2wc.png' }
+    ],
+    Engenharia: [
+        { name: 'Flexform', image: 'https://res.cloudinary.com/dojind78c/image/upload/v1756070224/flexform_rdgx3e.png' },
+        { name: 'Iron', image: 'https://res.cloudinary.com/dojind78c/image/upload/v1756070224/iron_p4onf4.png' },
+        { name: 'Resina Quanton RPG', image: 'https://res.cloudinary.com/dojind78c/image/upload/v1756070225/mockup-1kg-rpg-solo-copy_jrvckr.png' },
+        { name: 'Resina 70/30', image: 'https://res.cloudinary.com/dojind78c/image/upload/v1756070226/Reseina-quanton-7030_uc5ico.png' },
+    ],
+    Odontologia: [
+        { name: 'Athom Alinhadores', image: 'https://res.cloudinary.com/dojind78c/image/upload/v1756070226/mockup-solo-athom-alinhadores-1k_qsyqrl.png' },
+        { name: 'Athom Dental', image: 'https://res.cloudinary.com/dojind78c/image/upload/v1756070227/mockup-solo-athom-dental-1kg_ryniph.png' },
+        { name: 'Athom Gengiva', image: 'https://res.cloudinary.com/dojind78c/image/upload/v1756070227/mockup-solo-athom-gengiva-1kg_oq895e.png' },
+        { name: 'Poseidon', image: 'https://res.cloudinary.com/dojind78c/image/upload/v1756070228/poseidon_lxpjag.png' }
+    ],
+    UsoGeral: [
+        { name: 'Alchemist', image: 'https://res.cloudinary.com/dojind78c/image/upload/v1756070228/alchemist_mlhytp.png' },
+        { name: 'Low Smell', image: 'https://res.cloudinary.com/dojind78c/image/upload/v1756070229/lowsmell_xlomp0.png' },
+        { name: 'Poseidon', image: 'https://res.cloudinary.com/dojind78c/image/upload/v1756070229/poseidon_i6zy9i.png' },
+        { name: 'Pyroblast', image: 'https://res.cloudinary.com/dojind78c/image/upload/v1756070230/pyroblast_pkl5ng.png' },
+        { name: 'Spark', image: 'https://res.cloudinary.com/dojind78c/image/upload/v1756070230/spark_uccjgr.png' },
+        { name: 'Spin', image: 'https://res.cloudinary.com/dojind78c/image/upload/v1756070231/spin_mvrbpe.png' }
+    ]
+};
+
+// Variáveis para controle da navegação
+let currentPage = {};
+let itemsPerPage = 4;
+let selectedPrinter = null;
+
+// guarda a resina escolhida
+let selectedResin = '';
+
+// ids dos 4 campos (ajuste se seus IDs forem outros)
+const FIELD_IDS = {
+  layerHeight: 'altura-camada',
+  baseLayers: 'camadas-base',
+  exposure: 'tempo-exposicao',
+  baseExposure: 'tempo-exposicao-base'
+};
+
+function setField(id, value) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    // Garante que sempre atualiza o conteúdo do card
+    el.textContent = value;
+}
+
+function renderParams({ layerHeight, baseLayers, exposure, baseExposure }) {
+        setField(FIELD_IDS.layerHeight, layerHeight !== undefined && layerHeight !== null ? layerHeight + 'mm' : '-');
+        setField(FIELD_IDS.baseLayers, baseLayers !== undefined && baseLayers !== null ? baseLayers : '-');
+        setField(FIELD_IDS.exposure, exposure !== undefined && exposure !== null ? exposure + 's' : '-');
+        setField(FIELD_IDS.baseExposure, baseExposure !== undefined && baseExposure !== null ? baseExposure + 's' : '-');
+
+    // Exibe imagens da impressora e resina selecionadas
+    const imgPrinter = document.getElementById('img-printer');
+    const imgResin = document.getElementById('img-resin');
+
+    // Buscar imagem da impressora
+    let printerImgSrc = '';
+    let resinImgSrc = '';
+    if (selectedPrinter) {
+        // Procurar em todas as marcas
+        for (const brand in printerData) {
+            const found = printerData[brand].find(m => m.name === selectedPrinter);
+            if (found) {
+                printerImgSrc = found.image;
+                break;
+            }
+        }
+    }
+    if (selectedResin) {
+        // Procurar em todas as categorias
+        for (const cat in resinData) {
+            const found = resinData[cat].find(r => r.name === selectedResin);
+            if (found) {
+                resinImgSrc = found.image;
+                break;
+            }
+        }
+    }
+    if (imgPrinter) {
+        if (printerImgSrc) {
+            imgPrinter.src = printerImgSrc;
+            imgPrinter.style.display = 'block';
+        } else {
+            imgPrinter.style.display = 'none';
+        }
+    }
+    if (imgResin) {
+        if (resinImgSrc) {
+            imgResin.src = resinImgSrc;
+            imgResin.style.display = 'block';
+        } else {
+            imgResin.style.display = 'none';
+        }
+    }
+
+    const wrapper = document.querySelector('.params-wrapper');
+    if (wrapper) wrapper.classList.add('visible'); // mantém visível após preencher
+}
+
+function getParams(model, resin) {
+  const map = PARAMS[model];
+  if (!map) return ZERO_PARAMS;
+  return map[resin] ?? map['*'] ?? ZERO_PARAMS;
+}
+
+function tryUpdateParams() {
+  if (!selectedPrinter || !selectedResin) return;
+  renderParams(getParams(selectedPrinter, selectedResin));
+}
+// Atualiza os parâmetros quando a impressora ou resina são selecionadas
+
+
+// Função para mostrar os modelos de impressora quando uma marca é selecionada
+function showPrinterModels(brand, page = 0) {
+    const modelsContainer = document.querySelector('.models-container');
+    modelsContainer.innerHTML = '';
+    
+    const models = printerData[brand];
+    const totalPages = Math.ceil(models.length / itemsPerPage);
+    currentPage[brand] = page;
+
+    // Criar container para os modelos e navegação
+    const contentHTML = `
+        <div class="navigation-container">
+            <button class="nav-button prev" ${page === 0 ? 'disabled' : ''}><img src="https://res.cloudinary.com/dojind78c/image/upload/v1756083442/btn-next_iqc4bl.png" alt="Anterior" style="transform: rotate(180deg); width: 28px; height: 28px;"></button>
+            <div class="models-grid"></div>
+            <button class="nav-button next" ${page >= totalPages - 1 ? 'disabled' : ''}><img src="https://res.cloudinary.com/dojind78c/image/upload/v1756083442/btn-next_iqc4bl.png" alt="Próximo" style="width: 28px; height: 28px;"></button>
+        </div>
+    `;
+    modelsContainer.innerHTML = contentHTML;
+
+    const modelsGrid = modelsContainer.querySelector('.models-grid');
+    const startIndex = page * itemsPerPage;
+    const endIndex = Math.min(startIndex + itemsPerPage, models.length);
+
+    // Adicionar os modelos da página atual
+    for (let i = startIndex; i < endIndex; i++) {
+        const model = models[i];
+        const modelCard = document.createElement('div');
+        modelCard.className = 'model-card';
+        modelCard.innerHTML = `
+            <div class="model-image-container">
+                <img src="${model.image}" alt="${model.name}">
+            </div>
+            <div class="model-info">
+                <div class="model-name" onclick="setValueModel('${model.name}')">${model.name}</div> 
+            </div>
+        `;
+        modelsGrid.appendChild(modelCard);
+
+        modelCard.addEventListener('click', () => {
+            // Remover marca de seleção de todos os cards
+            document.querySelectorAll('.selected-mark').forEach(mark => mark.remove());
+
+            // Adicionar marca de seleção ao card clicado
+            const selectedMark = document.createElement('div');
+            selectedMark.className = 'selected-mark';
+            selectedMark.innerHTML = '<img src="https://res.cloudinary.com/dojind78c/image/upload/v1756083440/btn-check_nyje5l.png" alt="Selecionado" style="width:32px;height:32px;">';
+            selectedMark.style.position = 'absolute';
+            selectedMark.style.bottom = '8px';
+            selectedMark.style.left = '8px';
+            selectedMark.style.background = 'none';
+            selectedMark.style.boxShadow = 'none';
+            selectedMark.style.border = 'none';
+            modelCard.appendChild(selectedMark);
+
+            // Mostrar a seção de resinas
+            const resinSelector = document.querySelector('.resin-selector');
+            resinSelector.style.display = 'block';
+            resinSelector.classList.add('visible');
+            resinSelector.scrollIntoView({ behavior: 'smooth' });
+
+            selectedPrinter = model.name;
+            tryUpdateParams();
+        });
+    }
+
+    // Adicionar event listeners para os botões de navegação
+    const prevButton = modelsContainer.querySelector('.nav-button.prev');
+    const nextButton = modelsContainer.querySelector('.nav-button.next');
+
+    prevButton.addEventListener('click', () => {
+        if (page > 0) {
+            showPrinterModels(brand, page - 1);
+        }
+    });
+
+    nextButton.addEventListener('click', () => {
+        if (page < totalPages - 1) {
+            showPrinterModels(brand, page + 1);
+        }
+    });
+}
+
+function setValueModel(model) {
+  // salva o modelo escolhido e tenta atualizar os parâmetros
+  selectedPrinter = model;   // usa a variável global que você já tem
+  tryUpdateParams();
+}
+
+function setValueResin(resin) {
+  // salva a resina escolhida e tenta atualizar os parâmetros
+  selectedResin = resin;     // criada no passo 2
+  tryUpdateParams();
+}
+
+
+// Função para mostrar as resinas de uma categoria
+function showResins(category, page = 0) {
+    const resinsContainer = document.querySelector('.resins-container');
+    resinsContainer.innerHTML = '';
+    
+    const resins = resinData[category];
+    const totalPages = Math.ceil(resins.length / itemsPerPage);
+    
+    // Criar container para as resinas e navegação
+    const contentHTML = `
+        <div class="navigation-container">
+            <button class="nav-button prev" ${page === 0 ? 'disabled' : ''}><img src="https://res.cloudinary.com/dojind78c/image/upload/v1756083442/btn-next_iqc4bl.png" alt="Anterior" style="transform: rotate(180deg); width: 28px; height: 28px;"></button>
+            <div class="resins-grid"></div>
+            <button class="nav-button next" ${page >= totalPages - 1 ? 'disabled' : ''}><img src="https://res.cloudinary.com/dojind78c/image/upload/v1756083442/btn-next_iqc4bl.png" alt="Próximo" style="width: 28px; height: 28px;"></button>
+        </div>
+    `;
+    resinsContainer.innerHTML = contentHTML;
+
+    const resinsGrid = resinsContainer.querySelector('.resins-grid');
+    const startIndex = page * itemsPerPage;
+    const endIndex = Math.min(startIndex + itemsPerPage, resins.length);
+
+    // Adicionar as resinas da página atual
+    for (let i = startIndex; i < endIndex; i++) {
+        const resin = resins[i];
+        const resinCard = document.createElement('div');
+        resinCard.className = 'resin-card';
+        resinCard.innerHTML = `
+            <div class="resin-image-container">
+                <img src="${resin.image}" alt="${resin.name}">
+            </div>
+            <div class="resin-info">
+                <div class="resin-name" onclick="setValueResin('${resin.name}')">${resin.name}</div>
+            </div>
+        `;
+        resinsGrid.appendChild(resinCard);
+
+        resinCard.addEventListener('click', () => {
+            // Remover marca de seleção de todos os cards de resina
+            document.querySelectorAll('.resin-card .selected-mark').forEach(mark => mark.remove());
+            // Adicionar marca de seleção ao card clicado
+            const selectedMark = document.createElement('div');
+            selectedMark.className = 'selected-mark';
+            selectedMark.innerHTML = '<img src="https://res.cloudinary.com/dojind78c/image/upload/v1756083440/btn-check_nyje5l.png" alt="Selecionado" style="width:32px;height:32px;">';
+            selectedMark.style.position = 'absolute';
+            selectedMark.style.bottom = '8px';
+            selectedMark.style.left = '8px';
+            selectedMark.style.background = 'none';
+            selectedMark.style.boxShadow = 'none';
+            selectedMark.style.border = 'none';
+            resinCard.appendChild(selectedMark);
+            // Scroll suave para o card selecionado
+            resinCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+            selectedResin = resin.name;
+            tryUpdateParams();
+        });
+    }
+
+    // Adicionar event listeners para os botões de navegação
+    const prevButton = resinsContainer.querySelector('.nav-button.prev');
+    const nextButton = resinsContainer.querySelector('.nav-button.next');
+
+    prevButton.addEventListener('click', () => {
+        if (page > 0) {
+            showResins(category, page - 1);
+        }
+    });
+
+    nextButton.addEventListener('click', () => {
+        if (page < totalPages - 1) {
+            showResins(category, page + 1);
+        }
+    });
+}
+
+// Event listeners para os radio buttons das marcas
+document.querySelectorAll('input[name="brand"]').forEach(radio => {
+    radio.addEventListener('change', (e) => {
+        showPrinterModels(e.target.value, 0);
+        // Esconde a etapa 2 ao trocar de impressora
+        const resinSelector = document.querySelector('.resin-selector');
+        resinSelector.style.display = 'none';
+    });
+});
+
+// Event listeners para os radio buttons das categorias de resina
+document.querySelectorAll('input[name="category"]').forEach(radio => {
+    radio.addEventListener('change', (e) => {
+        showResins(e.target.value, 0);
+    });
+});
+
+window.setValueModel = setValueModel;
+window.setValueResin  = setValueResin;
+  </script>
+</body>
+
+</html>
