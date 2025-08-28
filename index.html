@@ -64,6 +64,7 @@ PAGINA PARAMETROS */
 .printer-selector, .resin-selector {
     margin-bottom: 3rem;
     position: relative;
+    display: block;
 }
 
 
@@ -292,7 +293,12 @@ PAGINA PARAMETROS */
     }
     
     .models-grid, .resins-grid {
-        grid-template-columns: repeat(1, 1fr);
+        grid-template-columns: repeat(1, 1fr); 
+        overflow-x: auto; /* Permite scroll horizontal se necessário */
+        gap: 1rem;
+    }
+    .models-container {
+        overflow-x: auto;
     }
 }
 
@@ -840,6 +846,12 @@ function showPrinterModels(brand, page = 0) {
         });
     }
 
+    function updateItemsPerPage() {
+    itemsPerPage = window.innerWidth <= 768 ? 1 : 4;
+}
+window.addEventListener('resize', updateItemsPerPage);
+updateItemsPerPage();
+
     // Adicionar event listeners para os botões de navegação
     const prevButton = modelsContainer.querySelector('.nav-button.prev');
     const nextButton = modelsContainer.querySelector('.nav-button.next');
@@ -952,7 +964,6 @@ document.querySelectorAll('input[name="brand"]').forEach(radio => {
         showPrinterModels(e.target.value, 0);
         // Esconde a etapa 2 ao trocar de impressora
         const resinSelector = document.querySelector('.resin-selector');
-        resinSelector.style.display = 'none';
     });
 });
 
