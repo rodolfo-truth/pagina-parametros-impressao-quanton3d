@@ -12,6 +12,16 @@
   /* CSS DA PAGINA DE SELEÇÃO DE IMPRESSORA E RESINA - QUANTON3D 
 PAGINA PARAMETROS */
 
+
+.div-parametrosDeImpressao {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 48px;
+    margin-bottom: 48px;
+}
+
 .main-container-quanton3d {
     line-height: 1.6;
     min-height: 100vh;
@@ -186,8 +196,13 @@ PAGINA PARAMETROS */
 }
 
 .model-info, .resin-info {
-    padding: 1rem;
-    text-align: center;
+    display: flex;
+    flex-direction: row;
+    justify-content: center ;
+}
+
+.selected-mark {
+
 }
 
 .model-name, .resin-name {
@@ -457,7 +472,6 @@ PAGINA PARAMETROS */
 .params-actions img { width: 24px; height: 24px; }
 
 .params-note {
-    max-width: 480px;
     margin: 8px auto 0 auto;
     color: #1a1a1a;
     font-size: 14px;
@@ -482,6 +496,21 @@ PAGINA PARAMETROS */
 
 <body>
   <div class="main-container-quanton3d">
+
+    <div class="div-parametrosDeImpressao" >
+        <div>
+            <div>
+                <img class="img-parametrosDeImpressao" src="https://res.cloudinary.com/dojind78c/image/upload/v1756506151/Slider_Banner_Parametros_oxiyfb.png" alt="">
+            </div>
+        </div>
+        <div>
+            <div>
+                <h2>PARÂMETROS DE IMPRESSÃO</h2>
+                <p>A impressão 3D fornece resultados extraordinários, desde que as configurações sejam ajustadas com precisão. Com nossos Parâmetros de Impressão, você garante uma configuração inicial eficiente, desempenho otimizado e máximo.</p>
+            </div>
+        </div>
+    </div>
+
     <div class="printer-selector">
       <h1 class="h1-quanton3d" >ESCOLHA SUA IMPRESSORA</h1>
       <div class="help-button">?</div>
@@ -540,7 +569,7 @@ PAGINA PARAMETROS */
 
     <!-- PARÂMETROS -->
     <div class="params-section" id="params-section">
-      <h2 class="h2-params">Passo 3</h2>
+      <h2 class="h2-params"></h2>
       <div class="params-flex">
         <div class="params-images">
           <img id="img-printer" class="img-param-printer" src="" alt="Impressora" style="display:none;" />
@@ -833,7 +862,7 @@ function showPrinterModels(brand, page = 0) {
             selectedMark.style.background = 'none';
             selectedMark.style.boxShadow = 'none';
             selectedMark.style.border = 'none';
-            modelCard.appendChild(selectedMark);
+            modelCard.querySelector('.model-info').appendChild(selectedMark);
 
             // Mostrar a seção de resinas
             const resinSelector = document.querySelector('.resin-selector');
@@ -926,9 +955,6 @@ function showResins(category, page = 0) {
             const selectedMark = document.createElement('div');
             selectedMark.className = 'selected-mark';
             selectedMark.innerHTML = '<img src="https://res.cloudinary.com/dojind78c/image/upload/v1756083440/btn-check_nyje5l.png" alt="Selecionado" style="width:32px;height:32px;">';
-            selectedMark.style.position = 'absolute';
-            selectedMark.style.bottom = '8px';
-            selectedMark.style.left = '8px';
             selectedMark.style.background = 'none';
             selectedMark.style.boxShadow = 'none';
             selectedMark.style.border = 'none';
