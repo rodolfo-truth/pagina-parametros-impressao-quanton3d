@@ -22,11 +22,11 @@ PAGINA PARAMETROS */
         margin-bottom: 48px;
     }
 
-    .div-texto-parametrosDeImpressao{
+    .div-texto-parametrosDeImpressao {
         width: 35%;
     }
 
-    .img-parametrosDeImpressao{
+    .img-parametrosDeImpressao {
         height: 400px;
         width: 430px;
     }
@@ -47,7 +47,7 @@ PAGINA PARAMETROS */
         margin: 0;
         padding: 0;
         font-family: 'Montserrat', sans-serif;
-        background-color: #0a0a3a;
+        background-color: #010054;
         color: #fff;
         box-sizing: border-box;
         max-width: 1400px;
@@ -147,7 +147,7 @@ PAGINA PARAMETROS */
     }
 
     .input-quanton3d[type="radio"]:checked+.labels-quanton3d::before {
-        content: '>';
+        content: '.';
         position: absolute;
         left: -10px;
         color: #4361EE;
@@ -160,7 +160,7 @@ PAGINA PARAMETROS */
         background-color: #4d7bff;
         padding: 2rem;
         border-radius: 0 12px 12px 0;
-        min-height: 400px;
+        height: 400px;
     }
 
     .navigation-container {
@@ -234,7 +234,7 @@ PAGINA PARAMETROS */
         justify-content: center;
     }
 
-    .selected-mark {}
+
 
     .model-name,
     .resin-name {
@@ -326,6 +326,50 @@ PAGINA PARAMETROS */
         .resins-grid {
             grid-template-columns: repeat(2, 1fr);
         }
+
+        .div-parametrosDeImpressao {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .img-parametrosDeImpressao {
+            width: 273px;
+            height: 240px;
+            margin-right: 14px;
+        }
+
+        .div-texto-parametrosDeImpressao {
+            width: 100%;
+        }
+
+        .h2-parametrosDeImpressao {
+            font-size: 36px;
+            line-height: 42px;
+            width: 100%;
+            margin-top: 4px;
+            text-align: center;
+        }
+
+        .h1-quanton3d {
+            font-size: 20px;
+        }
+
+        .h1-quanton3d::before {
+            font-size: 20px;
+            margin: 0;
+            min-width: 100px !important;
+        }
+
+        .h2-quanton3d {
+            font-size: 20px;
+        }
+
+        .h2-quanton3d::before {
+            font-size: 20px;
+            margin: 0;
+            min-width: 100px !important;
+        }
+
     }
 
     @media (max-width: 768px) {
@@ -336,6 +380,7 @@ PAGINA PARAMETROS */
             float: none;
             width: 100%;
             border-radius: 12px 12px 0 0;
+            height: 280px;
         }
 
         .models-container,
@@ -343,6 +388,7 @@ PAGINA PARAMETROS */
             box-sizing: border-box;
             margin-left: 0;
             border-radius: 0 0 12px 12px;
+            height: 400px;
         }
 
         .models-grid,
@@ -354,8 +400,103 @@ PAGINA PARAMETROS */
         }
 
         .models-container {
-            overflow-x: auto;
+            height: 400px;
         }
+
+        .model-card {
+            min-height: 260px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .model-image-container {
+            width: 180px;
+            height: 180px;
+            padding-top: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: none;
+        }
+
+        .model-image-container img {
+            width: 170px;
+            height: 170px;
+            max-width: 100%;
+            max-height: 100%;
+            padding: 0;
+            object-fit: contain;
+            background: none;
+        }
+
+        .model-info {
+            justify-content: center;
+            margin-top: 8px;
+        }
+
+        .model-name {
+            font-size: 1.1rem;
+            font-weight: bold;
+            text-align: center;
+            width: 100%;
+        }
+
+        .resin-card {
+            min-height: 260px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .resin-image-container {
+            width: 180px;
+            height: 180px;
+            padding-top: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: none;
+        }
+
+        .resin-image-container img {
+            width: 170px;
+            height: 170px;
+            max-width: 100%;
+            max-height: 100%;
+            padding: 0;
+            object-fit: contain;
+            background: none;
+        }
+
+        .resin-info {
+            justify-content: center;
+            margin-top: 8px;
+        }
+
+        .resin-name {
+            font-size: 1.1rem;
+            font-weight: bold;
+            text-align: center;
+            width: 100%;
+        }
+
+        .param-card {
+            height: 75px;
+            width: 100%;
+        }
+
+        .param-value {
+            width: 105px !important;
+        }
+
+        .param-title {
+            min-width: 150px;
+        }
+
+
     }
 
 
@@ -452,7 +593,7 @@ PAGINA PARAMETROS */
         color: #fff;
         font-weight: 800;
         font-size: 16px;
-        min-width: 120px;
+        width: 120px;
         justify-content: center;
         display: flex;
         align-items: center;
@@ -466,6 +607,10 @@ PAGINA PARAMETROS */
             gap: 24px;
         }
 
+        .h2-params {
+            text-align: center;
+        }
+
         .params-images {
             min-width: unset;
             gap: 12px;
@@ -473,7 +618,7 @@ PAGINA PARAMETROS */
 
         .img-param-printer,
         .img-param-resin {
-            width: 120px;
+            width: 230px;
             padding: 6px;
         }
 
@@ -483,7 +628,7 @@ PAGINA PARAMETROS */
         }
 
         .param-card {
-            padding: 14px 12px;
+            padding: 14px 0px !important;
         }
 
         .params-actions {
@@ -540,7 +685,7 @@ PAGINA PARAMETROS */
         }
 
         .param-card {
-            padding: 14px 12px;
+            padding: 14px 0px;
         }
 
         .params-actions {
@@ -907,7 +1052,7 @@ PAGINA PARAMETROS */
                 modelCard.className = 'model-card';
                 modelCard.innerHTML = `
             <div class="model-image-container">
-                <img src="${model.image}" alt="${model.name}">
+                <img src="${model.image}" alt="${model.name}" class="model-image">
             </div>
             <div class="model-info">
                 <div class="model-name" onclick="setValueModel('${model.name}')">${model.name}</div> 
@@ -941,12 +1086,6 @@ PAGINA PARAMETROS */
                     tryUpdateParams();
                 });
             }
-
-            function updateItemsPerPage() {
-                itemsPerPage = window.innerWidth <= 768 ? 1 : 4;
-            }
-            window.addEventListener('resize', updateItemsPerPage);
-            updateItemsPerPage();
 
             // Adicionar event listeners para os botões de navegação
             const prevButton = modelsContainer.querySelector('.nav-button.prev');
@@ -1007,7 +1146,7 @@ PAGINA PARAMETROS */
                 resinCard.className = 'resin-card';
                 resinCard.innerHTML = `
             <div class="resin-image-container">
-                <img src="${resin.image}" alt="${resin.name}">
+                <img src="${resin.image}" alt="${resin.name}" class="resin-image">
             </div>
             <div class="resin-info">
                 <div class="resin-name" onclick="setValueResin('${resin.name}')">${resin.name}</div>
@@ -1054,6 +1193,7 @@ PAGINA PARAMETROS */
         // Event listeners para os radio buttons das marcas
         document.querySelectorAll('input[name="brand"]').forEach(radio => {
             radio.addEventListener('change', (e) => {
+                updateItemsPerPage(); // <-- Adicione aqui
                 showPrinterModels(e.target.value, 0);
                 // Esconde a etapa 2 ao trocar de impressora
                 const resinSelector = document.querySelector('.resin-selector');
@@ -1063,12 +1203,20 @@ PAGINA PARAMETROS */
         // Event listeners para os radio buttons das categorias de resina
         document.querySelectorAll('input[name="category"]').forEach(radio => {
             radio.addEventListener('change', (e) => {
+                updateItemsPerPage(); // <-- Adicione aqui
                 showResins(e.target.value, 0);
             });
         });
 
         window.setValueModel = setValueModel;
         window.setValueResin = setValueResin;
+
+        // 1. Defina a função fora de qualquer função:
+        function updateItemsPerPage() {
+            itemsPerPage = window.innerWidth <= 768 ? 1 : 4;
+        }
+        window.addEventListener('resize', updateItemsPerPage);
+        updateItemsPerPage();
     </script>
 </body>
 
