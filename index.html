@@ -525,6 +525,18 @@ PAGINA PARAMETROS */
         margin-top: 2rem;
     }
 
+    .div-separator{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .div-separator-h1-quanton3d {
+        text-transform: uppercase;
+        font-size: 24px;
+        margin: 0;
+    }
+
     .params-section>.h2-params {
         font-size: 40px;
         line-height: 1.1;
@@ -706,6 +718,130 @@ PAGINA PARAMETROS */
             gap: 10px;
         }
     }
+
+    /* Estilos para a seção do Passo 3 */
+.div-params-section-passo3 {
+    background: #0092ff;
+    padding: 40px 20px;
+    margin-top: 40px;
+}
+
+.passo3-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Header com breadcrumbs */
+.passo3-header {
+    margin-bottom: 30px;
+}
+
+.breadcrumbs {
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.breadcrumbs .step {
+    font-size: 24px;
+    font-weight: 700;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.breadcrumbs .separator {
+    font-size: 24px;
+    font-weight: 300;
+}
+
+.breadcrumbs .title {
+    font-size: 20px;
+    font-weight: 300;
+    font-family: 'Montserrat', sans-serif;
+}
+
+/* Conteúdo principal */
+.passo3-content {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    font-weight: 700;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.calibrador-image {
+    flex: 1;
+    max-width: 450px;
+}
+
+.calibrador-image img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.calibrador-info {
+    flex: 1;
+    color: #fff;
+}
+
+.calibrador-info h2 {
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.calibrador-info p {
+    font-size: 18px;
+    line-height: 1.6;
+    margin-bottom: 30px;
+    font-weight: 300;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.download-btn {
+    display: inline-block;
+    background: #00FF7D;
+    color: #101d62;
+    padding: 12px 40px;
+    border-radius: 3px;
+    font-weight: 700;
+    font-size: 18px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.download-btn:hover {
+    background: #49ffa1;
+    filter: brightness(120%);
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .passo3-content {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .calibrador-image {
+        max-width: 100%;
+        margin-bottom: 30px;
+    }
+
+    .calibrador-info h2 {
+        font-size: 28px;
+    }
+
+    .calibrador-info p {
+        font-size: 16px;
+    }
+
+    .breadcrumbs {
+        justify-content: center;
+    }
+}
 </style>
 
 <body>
@@ -792,7 +928,9 @@ PAGINA PARAMETROS */
                 <!-- As resinas serão inseridas aqui via JavaScript -->
             </div>
         </div>
-
+        <div class="div-separator">
+            <h1 class="div-separator-h1-quanton3d">Após Selecionar Impressora e Resina, utilize os Resultados Abaixo</h1>
+        </div>
         <!-- PARÂMETROS -->
         <div class="params-section" id="params-section">
             <h2 class="h2-params"></h2>
@@ -842,9 +980,39 @@ PAGINA PARAMETROS */
                 toda a área de impressão.
             </p>
         </div>
+
+        <div class="div-params-section-passo3">
+    <div class="passo3-container">
+        <div class="passo3-header">
+            <div class="breadcrumbs">
+                <span class="step">PASSO 3</span>
+                <span class="separator">></span>
+                <span class="title">APRIMORE SEUS RESULTADOS</span>
+            </div>
+        </div>
+        
+        <div class="passo3-content">
+            <div class="calibrador-image">
+                <img src="" alt="Calibrador Quanton3D">
+            </div>
+            
+            <div class="calibrador-info">
+                <h2>CALIBRADOR QUANTON3D</h2>
+                <p>
+                    Parabéns! Você acabou de configurar sua impressora com os parâmetros iniciais 
+                    para utilizar as resinas Quanton3D. Mas que tal elevar ainda mais o nível de 
+                    precisão e extrair o máximo desempenho das nossas resinas? Faça o download do 
+                    arquivo CALIBRADOR.STL e confira também o guia rápido de configuração para 
+                    ajustes ainda mais perfeitos!
+                </p>
+                <a href="" class="download-btn">DOWNLOAD</a>
+            </div>
+        </div>
+    </div>
+</div>
     </div>
 
-
+    
 
     <script type="module">
         // parametros.js
