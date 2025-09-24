@@ -557,7 +557,8 @@ PAGINA PARAMETROS */
         flex-direction: row;
         align-items: center;
         justify-content: center;
-        gap: 220px;
+        gap: 15px;
+        margin-left: 20px;
         margin-bottom: 1.5rem;
     }
 
@@ -572,7 +573,7 @@ PAGINA PARAMETROS */
 
     .img-param-printer {
         width: 300px;
-        height: auto;
+        height: 300px;
         object-fit: contain;
         padding: 12px 0px;
         margin-right: -100px;
@@ -831,6 +832,7 @@ PAGINA PARAMETROS */
         .passo3-content {
             flex-direction: column;
             text-align: center;
+            gap: 0;
         }
 
         .calibrador-image {
@@ -848,6 +850,16 @@ PAGINA PARAMETROS */
 
         .breadcrumbs {
             justify-content: center;
+        }
+
+        .calibrador-image img {
+            width: 100%;
+            height: auto;
+        }
+
+        span.step {
+            font-size: 21px !important;
+            min-width: 100px;
         }
     }
 </style>
