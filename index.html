@@ -1783,6 +1783,7 @@ PAGINA PARAMETROS */
         window.addEventListener('resize', updateItemsPerPage);
         updateItemsPerPage();
     </script>
+    
     <script>
 /*
   Função: captura a área de parâmetros e baixa PNG (ou PDF se quiser).
@@ -1792,122 +1793,116 @@ PAGINA PARAMETROS */
 */
 
 (function () {
-    // carrega script externo de forma dinâmica retornando Promise
+    // Função para carregar scripts externos dinamicamente
     function loadScript(url) {
         return new Promise((resolve, reject) => {
-            const s = document.createElement('script');
-            s.src = url;
-            s.onload = resolve;
-            s.onerror = reject;
-            document.head.appendChild(s);
+            const script = document.createElement('script');
+            script.src = url;
+            script.onload = resolve;
+            script.onerror = reject;
+            document.head.appendChild(script);
         });
     }
 
-    // converter imagens externas para object URLs (tentativa) - útil se CORS permitir fetch
+    // Função para normalizar imagens (converter para object URLs)
     async function normalizeImages(container) {
         const imgs = Array.from(container.querySelectorAll('img'));
         for (const img of imgs) {
-            // ignora imagens já locais/data:
             if (!img.src || img.src.startsWith('data:') || img.src.startsWith('blob:')) continue;
             try {
-                const resp = await fetch(img.src, { mode: 'cors' }); // requer CORS no servidor da imagem
-                if (!resp.ok) continue;
-                const blob = await resp.blob();
+                const response = await fetch(img.src, { mode: 'cors' });
+                if (!response.ok) continue;
+                const blob = await response.blob();
                 const objectUrl = URL.createObjectURL(blob);
-                // armazena src anterior por segurança
                 img.setAttribute('data-old-src', img.src);
                 img.src = objectUrl;
             } catch (err) {
-                // se falhar no fetch, continua (html2canvas pode falhar com imagem tainted)
-                // console.warn('Não foi possível proxiar imagem', img.src, err);
+                console.warn('Erro ao carregar imagem:', img.src, err);
             }
         }
     }
 
+    // Função para capturar e baixar como PNG
     async function captureAndDownloadAsPNG(containerSelector, fileName = 'parametros-quanton.png') {
-        // garante html2canvas carregado (versão 1.4+)
         if (typeof html2canvas === 'undefined') {
             await loadScript('https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js');
         }
 
-        const el = document.querySelector(containerSelector);
-        if (!el) return alert('Elemento para captura não encontrado: ' + containerSelector);
+        const container = document.querySelector(containerSelector);
+        if (!container) {
+            alert('Elemento para captura não encontrado: ' + containerSelector);
+            return;
+        }
 
-        // tenta normalizar imagens (fetch -> blob -> objectUrl). Se falhar por CORS, pode perder imagens.
-        await normalizeImages(el);
+        await normalizeImages(container);
 
-        // scale para melhorar resolução (2 ou 3 conforme necessidade)
-        const scale = 2;
-        const canvas = await html2canvas(el, {
+        const scale = 2; // Ajuste para melhorar a resolução
+        const canvas = await html2canvas(container, {
             scale,
-            useCORS: true,      // tenta habilitar crossOrigin se as imagens permitirem
-            backgroundColor: null, // mantém transparente se desejar
-            scrollY: -window.scrollY, // corrige posição se necessário
+            useCORS: true,
+            backgroundColor: null,
+            scrollY: -window.scrollY,
             windowWidth: document.documentElement.clientWidth
         });
 
-        // restaurar object URLs? (opcional) - deixei sem por simplicidade
         const dataUrl = canvas.toDataURL('image/png');
-
-        // cria link para download
-        const a = document.createElement('a');
-        a.href = dataUrl;
-        a.download = fileName;
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
+        const link = document.createElement('a');
+        link.href = dataUrl;
+        link.download = fileName;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
     }
 
-    // função alternativa: gerar PDF com jsPDF (requer carregar jsPDF)
+    // Função para capturar e baixar como PDF
     async function captureAndDownloadAsPDF(containerSelector, fileName = 'parametros-quanton.pdf') {
         if (typeof html2canvas === 'undefined') {
             await loadScript('https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js');
         }
-        if (typeof window.jspdf === 'undefined' && typeof window.jspdf === 'undefined') {
-            // carrega versão UMD do jsPDF
+        if (typeof window.jspdf === 'undefined') {
             await loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
         }
 
-        const el = document.querySelector(containerSelector);
-        if (!el) return alert('Elemento para captura não encontrado: ' + containerSelector);
+        const container = document.querySelector(containerSelector);
+        if (!container) {
+            alert('Elemento para captura não encontrado: ' + containerSelector);
+            return;
+        }
 
-        await normalizeImages(el);
+        await normalizeImages(container);
 
         const scale = 2;
-        const canvas = await html2canvas(el, { scale, useCORS: true, backgroundColor: '#e6edf5' });
+        const canvas = await html2canvas(container, { scale, useCORS: true, backgroundColor: '#e6edf5' });
         const imgData = canvas.toDataURL('image/png');
 
-        // usa jspdf (UMD export fica em window.jspdf.jsPDF)
-        const { jsPDF } = window.jspdf || window.jspdf || {};
+        const { jsPDF } = window.jspdf || {};
         if (!jsPDF) {
             alert('jsPDF não foi carregado corretamente.');
             return;
         }
 
-        // cria PDF no tamanho da imagem
         const pdf = new jsPDF({
             unit: 'px',
-            format: [canvas.width, canvas.height] // tamanho da página em pixels
+            format: [canvas.width, canvas.height]
         });
         pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
         pdf.save(fileName);
     }
 
-    // handler do botão/link de download
+    // Evento de clique no botão de download
     async function handleDownloadClick(e) {
         e.preventDefault();
-        // Escolha: PNG (mais simples) ou PDF (comentado)
-        // Para PNG:
         await captureAndDownloadAsPNG('#params-section', 'parametros-quanton.png');
-
-        // Para PDF (descomente se preferir):
+        // Para PDF, descomente a linha abaixo:
         // await captureAndDownloadAsPDF('#params-section', 'parametros-quanton.pdf');
     }
 
-    // liga ao elemento existente
+    // Vincular evento ao botão de download
     document.addEventListener('DOMContentLoaded', () => {
-        const link = document.getElementById('download-result');
-        if (link) link.addEventListener('click', handleDownloadClick);
+        const downloadLink = document.getElementById('download-result');
+        if (downloadLink) {
+            downloadLink.addEventListener('click', handleDownloadClick);
+        }
     });
 })();
 </script>
