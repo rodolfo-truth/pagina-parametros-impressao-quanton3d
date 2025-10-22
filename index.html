@@ -1785,15 +1785,8 @@ PAGINA PARAMETROS */
     </script>
     
     <script>
-/*
-  Função: captura a área de parâmetros e baixa PNG (ou PDF se quiser).
-  Requer: html2canvas (carregado dinamicamente abaixo).
-  Observação importante sobre CORS: se as imagens (printer/resin) estiverem em host sem CORS,
-  a captura pode falhar/omitir imagens. Preferível servir imagens com Access-Control-Allow-Origin: *
-*/
-
 (function () {
-    // Função para carregar scripts externos dinamicamente
+    // Carrega html2canvas se necessário
     function loadScript(url) {
         return new Promise((resolve, reject) => {
             const script = document.createElement('script');
@@ -1804,25 +1797,16 @@ PAGINA PARAMETROS */
         });
     }
 
-    // Função para normalizar imagens (converter para object URLs)
-    async function normalizeImages(container) {
+    // Garante que todas as imagens estejam carregadas
+    async function waitForImagesToLoad(container) {
         const imgs = Array.from(container.querySelectorAll('img'));
-        for (const img of imgs) {
-            if (!img.src || img.src.startsWith('data:') || img.src.startsWith('blob:')) continue;
-            try {
-                const response = await fetch(img.src, { mode: 'cors' });
-                if (!response.ok) continue;
-                const blob = await response.blob();
-                const objectUrl = URL.createObjectURL(blob);
-                img.setAttribute('data-old-src', img.src);
-                img.src = objectUrl;
-            } catch (err) {
-                console.warn('Erro ao carregar imagem:', img.src, err);
-            }
-        }
+        await Promise.all(imgs.map(img => new Promise(resolve => {
+            if (img.complete) resolve();
+            else img.onload = img.onerror = resolve;
+        })));
     }
 
-    // Função para capturar e baixar como PNG
+    // Captura e baixa como PNG
     async function captureAndDownloadAsPNG(containerSelector, fileName = 'parametros-quanton.png') {
         if (typeof html2canvas === 'undefined') {
             await loadScript('https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js');
@@ -1834,10 +1818,9 @@ PAGINA PARAMETROS */
             return;
         }
 
-        // Garantir que todas as imagens estejam carregadas
         await waitForImagesToLoad(container);
 
-        const scale = 2; // Ajuste para melhorar a resolução
+        const scale = 2;
         const canvas = await html2canvas(container, {
             scale,
             useCORS: true,
@@ -1855,50 +1838,13 @@ PAGINA PARAMETROS */
         link.remove();
     }
 
-    // Função para capturar e baixar como PDF
-    async function captureAndDownloadAsPDF(containerSelector, fileName = 'parametros-quanton.pdf') {
-        if (typeof html2canvas === 'undefined') {
-            await loadScript('https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js');
-        }
-        if (typeof window.jspdf === 'undefined') {
-            await loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
-        }
-
-        const container = document.querySelector(containerSelector);
-        if (!container) {
-            alert('Elemento para captura não encontrado: ' + containerSelector);
-            return;
-        }
-
-        await normalizeImages(container);
-
-        const scale = 2;
-        const canvas = await html2canvas(container, { scale, useCORS: true, backgroundColor: '#e6edf5' });
-        const imgData = canvas.toDataURL('image/png');
-
-        const { jsPDF } = window.jspdf || {};
-        if (!jsPDF) {
-            alert('jsPDF não foi carregado corretamente.');
-            return;
-        }
-
-        const pdf = new jsPDF({
-            unit: 'px',
-            format: [canvas.width, canvas.height]
-        });
-        pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
-        pdf.save(fileName);
-    }
-
     // Evento de clique no botão de download
     async function handleDownloadClick(e) {
         e.preventDefault();
         await captureAndDownloadAsPNG('#params-section', 'parametros-quanton.png');
-        // Para PDF, descomente a linha abaixo:
-        // await captureAndDownloadAsPDF('#params-section', 'parametros-quanton.pdf');
     }
 
-    // Vincular evento ao botão de download
+    // Vincula evento ao botão de download
     document.addEventListener('DOMContentLoaded', () => {
         const downloadLink = document.getElementById('download-result');
         if (downloadLink) {
@@ -1906,14 +1852,6 @@ PAGINA PARAMETROS */
         }
     });
 })();
-
-async function waitForImagesToLoad(container) {
-    const imgs = Array.from(container.querySelectorAll('img'));
-    await Promise.all(imgs.map(img => new Promise(resolve => {
-        if (img.complete) resolve();
-        else img.onload = img.onerror = resolve;
-    })));
-}
 </script>
 </body>
 
