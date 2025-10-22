@@ -1834,7 +1834,8 @@ PAGINA PARAMETROS */
             return;
         }
 
-        await normalizeImages(container);
+        // Garantir que todas as imagens estejam carregadas
+        await waitForImagesToLoad(container);
 
         const scale = 2; // Ajuste para melhorar a resolução
         const canvas = await html2canvas(container, {
@@ -1905,6 +1906,14 @@ PAGINA PARAMETROS */
         }
     });
 })();
+
+async function waitForImagesToLoad(container) {
+    const imgs = Array.from(container.querySelectorAll('img'));
+    await Promise.all(imgs.map(img => new Promise(resolve => {
+        if (img.complete) resolve();
+        else img.onload = img.onerror = resolve;
+    })));
+}
 </script>
 </body>
 
