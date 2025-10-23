@@ -1818,15 +1818,20 @@ PAGINA PARAMETROS */
             return;
         }
 
+        // Verifica se está visível
+        const style = window.getComputedStyle(container);
+        if (style.display === 'none' || style.visibility === 'hidden' || container.offsetWidth === 0 || container.offsetHeight === 0) {
+            alert('O resultado dos parâmetros não está visível. Selecione impressora e resina antes de baixar.');
+            return;
+        }
+
         await waitForImagesToLoad(container);
 
         const scale = 2;
         const canvas = await html2canvas(container, {
             scale,
             useCORS: true,
-            backgroundColor: null,
-            scrollY: -window.scrollY,
-            windowWidth: document.documentElement.clientWidth
+            backgroundColor: null
         });
 
         const dataUrl = canvas.toDataURL('image/png');
@@ -1835,7 +1840,7 @@ PAGINA PARAMETROS */
         link.download = fileName;
         document.body.appendChild(link);
         link.click();
-        link.remove();
+        document.body.removeChild(link);
     }
 
     // Evento de clique no botão de download
