@@ -1783,101 +1783,101 @@ PAGINA PARAMETROS */
         window.addEventListener('resize', updateItemsPerPage);
         updateItemsPerPage();
     </script>
-    
-    <script>
-function downloadParams() {
-    // Função para converter elementos para canvas
-    async function elementToCanvas(element) {
-        try {
-            // Carrega html2canvas se necessário
-            if (typeof html2canvas === 'undefined') {
-                await new Promise((resolve, reject) => {
-                    const script = document.createElement('script');
-                    script.src = 'https://html2canvas.hertzen.com/dist/html2canvas.min.js';
-                    script.onload = resolve;
-                    script.onerror = reject;
-                    document.head.appendChild(script);
-                });
-            }
 
-            // Aguarda todas as imagens carregarem
-            const images = element.getElementsByTagName('img');
-            await Promise.all(Array.from(images).map(img => {
-                if (img.complete) return Promise.resolve();
-                return new Promise(resolve => {
-                    img.onload = resolve;
-                    img.onerror = resolve;
-                });
-            }));
-
-            // Renderiza o canvas
-            return await html2canvas(element, {
-                useCORS: true,
-                allowTaint: true,
-                scale: 2,
-                backgroundColor: '#e6edf5',
-                logging: false
-            });
-        } catch (err) {
-            console.error('Erro ao converter para canvas:', err);
-            throw err;
-        }
-    }
-
-    // Função principal de download
-    async function downloadAsImage() {
-        try {
-            const element = document.getElementById('params-section');
-            if (!element) throw new Error('Elemento não encontrado');
-
-            // Verifica se há parâmetros selecionados
-            const values = document.querySelectorAll('.param-value');
-            const hasParams = Array.from(values).some(v => v.textContent !== '-');
-            if (!hasParams) {
-                alert('Por favor, selecione uma impressora e uma resina primeiro.');
-                return;
-            }
-
-            // Converte para canvas e faz download
-            const canvas = await elementToCanvas(element);
-            const image = canvas.toDataURL('image/png', 1.0);
-            
-            // Tenta diferentes métodos de download
-            try {
-                // Método 1: usando <a> download
-                const link = document.createElement('a');
-                link.download = 'parametros-quanton3d.png';
-                link.href = image;
-                link.click();
-            } catch (e) {
+    <!-- <script>
+        function downloadParams() {
+            // Função para converter elementos para canvas
+            async function elementToCanvas(element) {
                 try {
-                    // Método 2: window.open
-                    window.open(image);
-                } catch (e2) {
-                    // Método 3: nova aba
-                    const newTab = window.open();
-                    newTab.document.write(`<img src="${image}" alt="Parâmetros Quanton3D">`);
+                    // Carrega html2canvas se necessário
+                    if (typeof html2canvas === 'undefined') {
+                        await new Promise((resolve, reject) => {
+                            const script = document.createElement('script');
+                            script.src = 'https://html2canvas.hertzen.com/dist/html2canvas.min.js';
+                            script.onload = resolve;
+                            script.onerror = reject;
+                            document.head.appendChild(script);
+                        });
+                    }
+
+                    // Aguarda todas as imagens carregarem
+                    const images = element.getElementsByTagName('img');
+                    await Promise.all(Array.from(images).map(img => {
+                        if (img.complete) return Promise.resolve();
+                        return new Promise(resolve => {
+                            img.onload = resolve;
+                            img.onerror = resolve;
+                        });
+                    }));
+
+                    // Renderiza o canvas
+                    return await html2canvas(element, {
+                        useCORS: true,
+                        allowTaint: true,
+                        scale: 2,
+                        backgroundColor: '#e6edf5',
+                        logging: false
+                    });
+                } catch (err) {
+                    console.error('Erro ao converter para canvas:', err);
+                    throw err;
                 }
             }
-        } catch (err) {
-            console.error('Erro no download:', err);
-            alert('Ocorreu um erro ao gerar a imagem. Por favor, tente novamente.');
+
+            // Função principal de download
+            async function downloadAsImage() {
+                try {
+                    const element = document.getElementById('params-section');
+                    if (!element) throw new Error('Elemento não encontrado');
+
+                    // Verifica se há parâmetros selecionados
+                    const values = document.querySelectorAll('.param-value');
+                    const hasParams = Array.from(values).some(v => v.textContent !== '-');
+                    if (!hasParams) {
+                        alert('Por favor, selecione uma impressora e uma resina primeiro.');
+                        return;
+                    }
+
+                    // Converte para canvas e faz download
+                    const canvas = await elementToCanvas(element);
+                    const image = canvas.toDataURL('image/png', 1.0);
+
+                    // Tenta diferentes métodos de download
+                    try {
+                        // Método 1: usando <a> download
+                        const link = document.createElement('a');
+                        link.download = 'parametros-quanton3d.png';
+                        link.href = image;
+                        link.click();
+                    } catch (e) {
+                        try {
+                            // Método 2: window.open
+                            window.open(image);
+                        } catch (e2) {
+                            // Método 3: nova aba
+                            const newTab = window.open();
+                            newTab.document.write(`<img src="${image}" alt="Parâmetros Quanton3D">`);
+                        }
+                    }
+                } catch (err) {
+                    console.error('Erro no download:', err);
+                    alert('Ocorreu um erro ao gerar a imagem. Por favor, tente novamente.');
+                }
+            }
+
+            // Adiciona o listener ao botão de download
+            const downloadBtn = document.getElementById('download-result');
+            if (downloadBtn) {
+                downloadBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    downloadAsImage();
+                });
+            }
         }
-    }
 
-    // Adiciona o listener ao botão de download
-    const downloadBtn = document.getElementById('download-result');
-    if (downloadBtn) {
-        downloadBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            downloadAsImage();
-        });
-    }
-}
-
-// Adiciona ao DOMContentLoaded
-document.addEventListener('DOMContentLoaded', downloadParams);
-</script>
+        // Adiciona ao DOMContentLoaded
+        document.addEventListener('DOMContentLoaded', downloadParams);
+    </script> -->
 </body>
 
 </html>
